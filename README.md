@@ -1,5 +1,7 @@
 # 苏格拉底提问词 · Socratic Questioner
 
+网址：https://elainecai216.github.io/socratic-questioner/
+
 不给你答案，只问到你真正懂为止。
 
 把任何长篇专业文档交给它：AI **不直接总结**，而是像苏格拉底一样一次只问一个问题，按
