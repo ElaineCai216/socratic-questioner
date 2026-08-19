@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="11" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.58  0 0 0 0 0.52  0 0 0 0 0.42  0 0 0 0.10 0"/>
+    </filter>
+    <filter id="photoGrain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" seed="5" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.3  0 0 0 0 0.27  0 0 0 0 0.22  0 0 0 0.16 0"/>
+    </filter>
+    <radialGradient id="vignette" cx="45%" cy="42%" r="75%">
+      <stop offset="0%" stop-color="#F6EFE1"/>
+      <stop offset="60%" stop-color="#F1E8D8"/>
+      <stop offset="100%" stop-color="#E6DAC4"/>
+    </radialGradient>
+    <radialGradient id="photoBg" cx="38%" cy="36%" r="80%">
+      <stop offset="0%" stop-color="#DAD1C2"/>
+      <stop offset="55%" stop-color="#C9BFAE"/>
+      <stop offset="100%" stop-color="#ABA18F"/>
+    </radialGradient>
+    <linearGradient id="bustShade" x1="0" y1="0" x2="1" y2="0.3">
+      <stop offset="0%" stop-color="#EFE8DA"/>
+      <stop offset="38%" stop-color="#D9D0C1"/>
+      <stop offset="70%" stop-color="#B9AF9E"/>
+      <stop offset="100%" stop-color="#948A79"/>
+    </linearGradient>
+    <linearGradient id="robeShade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#DED5C6"/>
+      <stop offset="55%" stop-color="#C3B9A8"/>
+      <stop offset="100%" stop-color="#9C927F"/>
+    </linearGradient>
+    <clipPath id="photoClip">
+      <path d="M 700 150 C 820 138 980 142 1090 152 C 1190 160 1270 178 1325 215 C 1365 242 1388 280 1396 330 C 1406 400 1410 470 1404 545 C 1400 610 1392 660 1376 705 C 1358 752 1330 788 1295 818 C 1260 848 1210 872 1145 890 C 1080 908 1000 916 900 918 C 815 920 745 912 700 898 C 662 886 642 862 634 830 C 624 792 620 730 620 660 C 620 590 622 520 630 450 C 638 380 652 318 672 268 C 690 224 706 192 700 150 Z"/>
+    </clipPath>
+    <clipPath id="cobaltClip">
+      <path d="M 1600 0 L 1600 1010 L 0 1010 L 0 0 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Paper base -->
+  <rect width="1600" height="1000" fill="url(#vignette)"/>
+  <rect width="1600" height="1000" filter="url(#grain)"/>
+
+  <!-- Quiet-field contour echoes (broken lines drifting from bust toward text side) -->
+  <g stroke="#4A4034" stroke-width="2.2" fill="none" opacity="0.5" stroke-linecap="round" stroke-dasharray="14 10 4 8">
+    <path d="M 660 330 C 560 300 470 330 390 380"/>
+    <path d="M 640 470 C 540 450 430 465 350 510"/>
+    <path d="M 655 620 C 555 600 465 620 400 660"/>
+  </g>
+  <g stroke="#7C7262" stroke-width="1.4" fill="none" opacity="0.45" stroke-linecap="round" stroke-dasharray="3 7">
+    <path d="M 640 550 C 560 540 480 555 420 585"/>
+  </g>
+
+  <!-- Photo anchor: Socrates bust inside torn fragment -->
+  <g clip-path="url(#photoClip)">
+    <rect x="600" y="120" width="840" height="820" fill="url(#photoBg)"/>
+    <!-- soft inner shadow top -->
+    <ellipse cx="1010" cy="560" rx="400" ry="380" fill="none" stroke="#8A8071" stroke-width="90" opacity="0.12"/>
+    <!-- bust -->
+    <g>
+      <!-- head + neck outline -->
+      <path d="M 1010 205 C 1072 204 1132 262 1157 342 C 1170 388 1174 430 1168 470 C 1162 505 1150 535 1130 560 C 1118 576 1112 592 1115 612 C 1118 634 1128 650 1140 662 L 958 668 C 948 640 942 612 938 582 C 920 540 900 512 884 470 C 874 444 870 422 874 402 C 878 380 884 362 886 344 C 892 310 898 282 912 258 C 930 228 962 208 1010 205 Z" fill="url(#bustShade)"/>
+      <!-- bald crown highlight -->
+      <path d="M 1005 210 C 1050 210 1100 250 1128 305 C 1090 272 1045 252 1002 252 C 962 252 930 268 910 290 C 916 250 952 212 1005 210 Z" fill="#F4EDE0" opacity="0.55"/>
+      <!-- nose / brow shadow -->
+      <path d="M 874 402 C 862 392 858 382 862 372 C 868 358 880 350 888 344 C 892 360 890 376 884 388 C 880 396 878 400 874 402 Z" fill="#6E6454" opacity="0.75"/>
+      <!-- brow -->
+      <path d="M 890 330 C 878 334 868 344 862 356" stroke="#544B3C" stroke-width="3.4" fill="none" stroke-linecap="round" opacity="0.85"/>
+      <!-- nostril shadow -->
+      <path d="M 872 396 C 878 394 884 392 888 388" stroke="#6E6454" stroke-width="2.6" fill="none" stroke-linecap="round" opacity="0.8"/>
+      <!-- jaw line -->
+      <path d="M 884 468 C 894 482 906 494 922 500" stroke="#5C5344" stroke-width="2.6" fill="none" stroke-linecap="round" opacity="0.7"/>
+      <!-- mouth line -->
+      <path d="M 898 434 C 906 430 912 432 914 438" stroke="#5C5344" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- ear -->
+      <path d="M 1148 452 C 1156 462 1158 476 1152 488 C 1146 500 1138 506 1132 508" stroke="#8A8071" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8"/>
+      <!-- beard mass -->
+      <path d="M 916 470 C 898 500 886 538 902 572 C 920 608 956 628 1000 630 C 1048 632 1092 618 1120 592 C 1130 582 1134 568 1130 552 C 1126 540 1118 534 1110 532 C 1082 526 1052 530 1022 530 C 982 530 948 514 930 490 C 922 480 918 472 916 470 Z" fill="#8E8372"/>
+      <path d="M 916 470 C 906 492 898 516 902 544 C 906 574 926 600 956 616 C 970 624 986 628 1002 628" fill="none" stroke="#5C5344" stroke-width="2.5" opacity="0.7"/>
+      <path d="M 938 500 C 930 522 932 550 946 574" stroke="#6E6454" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round"/>
+      <path d="M 972 520 C 966 548 970 580 986 606" stroke="#6E6454" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round"/>
+      <path d="M 1012 536 C 1010 566 1016 596 1032 618" stroke="#6E6454" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round"/>
+      <!-- neck shadow -->
+      <path d="M 1000 640 C 1012 620 1026 614 1042 618" stroke="#6E6454" stroke-width="3" fill="none" opacity="0.5" stroke-linecap="round"/>
+      <!-- robe -->
+      <path d="M 958 668 C 920 672 880 692 848 722 C 810 760 790 810 782 868 C 778 898 782 912 790 918 L 1300 918 C 1306 900 1302 866 1290 838 C 1272 800 1246 768 1212 740 C 1176 712 1134 684 1100 668 C 1078 658 1066 660 1056 666 L 958 668 Z" fill="url(#robeShade)"/>
+      <!-- robe folds -->
+      <g stroke="#8A8071" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8">
+        <path d="M 852 730 C 866 772 870 820 858 872"/>
+        <path d="M 930 704 C 944 752 946 806 934 866"/>
+        <path d="M 1010 684 C 1026 738 1030 800 1020 862"/>
+        <path d="M 1096 690 C 1112 744 1116 806 1106 866"/>
+        <path d="M 1180 716 C 1196 768 1200 826 1192 876"/>
+        <path d="M 1246 748 C 1260 796 1264 848 1256 890"/>
+      </g>
+      <path d="M 1022 800 C 1042 832 1054 862 1058 896" stroke="#6E6454" stroke-width="2.4" fill="none" opacity="0.55" stroke-linecap="round"/>
+      <path d="M 1140 742 C 1156 780 1162 826 1160 878" stroke="#6E6454" stroke-width="2.4" fill="none" opacity="0.5" stroke-linecap="round"/>
+      <g stroke="#B3A996" stroke-width="2" fill="none" opacity="0.7">
+        <path d="M 892 722 C 904 764 908 812 900 864"/>
+        <path d="M 1058 692 C 1072 742 1074 800 1066 858"/>
+      </g>
+    </g>
+    <!-- photo grain + halftone -->
+    <rect x="600" y="120" width="840" height="820" filter="url(#photoGrain)"/>
+    <g fill="#4A4034" opacity="0.10">
+      <circle cx="760" cy="300" r="3"/><circle cx="790" cy="330" r="2.4"/><circle cx="724" cy="360" r="2.8"/>
+      <circle cx="1320" cy="300" r="3"/><circle cx="1350" cy="350" r="2.4"/><circle cx="1300" cy="390" r="2.6"/>
+      <circle cx="1340" cy="520" r="2.8"/><circle cx="1370" cy="570" r="2.2"/><circle cx="1326" cy="620" r="2.6"/>
+      <circle cx="740" cy="700" r="2.6"/><circle cx="770" cy="740" r="2.2"/><circle cx="706" cy="770" r="2.8"/>
+    </g>
+  </g>
+
+  <!-- Torn edge on the right of the photo fragment where illustration emerges -->
+  <g fill="none" stroke="#F1E8D8" stroke-width="6" stroke-linecap="round" opacity="0.9">
+    <path d="M 1386 226 C 1402 240 1414 262 1420 290 C 1428 322 1430 358 1426 396 C 1422 438 1412 470 1400 500 C 1388 532 1376 556 1370 576"/>
+    <path d="M 1418 330 C 1436 348 1444 372 1446 400 C 1448 432 1444 462 1434 490"/>
+  </g>
+
+  <!-- Cobalt illustration field (upper right), source-derived planes -->
+  <path d="M 1600 0 L 1130 0 C 1090 30 1062 66 1060 104 C 1058 142 1078 172 1110 196 C 1150 226 1190 248 1222 280 C 1256 314 1278 354 1282 398 C 1286 446 1270 492 1238 528 C 1206 564 1168 590 1144 622 C 1122 652 1112 684 1120 716 C 1128 750 1156 776 1196 794 C 1236 812 1282 824 1330 840 C 1400 862 1478 884 1600 908 Z" fill="#2749C9"/>
+  <path d="M 1600 0 L 1268 0 C 1240 40 1224 84 1232 126 C 1240 168 1268 198 1304 220 C 1340 242 1382 260 1418 288 C 1456 318 1480 356 1486 398 C 1492 442 1478 486 1448 518 C 1420 548 1384 570 1356 596 C 1330 620 1316 648 1320 678 C 1324 710 1346 736 1380 754 C 1420 774 1470 792 1526 810 L 1600 830 Z" fill="#1D38A0" opacity="0.85"/>
+  <!-- torn boundary along cobalt left edge -->
+  <path d="M 1134 6 C 1096 38 1066 72 1064 106 L 1074 128 L 1062 148 L 1074 170 L 1064 190 L 1082 212 L 1070 232 L 1094 254 L 1084 274 L 1110 296 L 1100 316 L 1130 338 L 1120 358 L 1148 380 L 1138 400 L 1164 422 L 1154 442 L 1178 464 L 1168 484 L 1190 506 L 1180 526 L 1200 548 L 1190 568 L 1208 590 L 1198 610 L 1214 632 L 1204 652 L 1218 674 L 1210 694 L 1222 716 L 1214 736 L 1228 758" stroke="#F1E8D8" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.95"/>
+  <!-- deeper torn notches -->
+  <path d="M 1116 154 L 1096 168 L 1106 190" stroke="#F1E8D8" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.95"/>
+  <path d="M 1186 416 L 1166 432 L 1178 456" stroke="#F1E8D8" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.95"/>
+  <path d="M 1230 668 L 1212 686 L 1224 708" stroke="#F1E8D8" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.95"/>
+  <!-- torn paper window inside cobalt -->
+  <path d="M 1396 120 C 1430 112 1468 116 1498 132 C 1516 141 1524 156 1522 174 C 1519 198 1506 216 1486 226 C 1458 240 1420 240 1394 226 C 1374 215 1364 194 1368 168 C 1372 146 1384 128 1396 120 Z" fill="#F1E8D8"/>
+  <path d="M 1480 400 C 1510 392 1542 396 1568 410 C 1584 419 1590 432 1588 448 C 1585 468 1572 484 1554 492 C 1530 502 1498 502 1476 490 C 1458 480 1450 462 1454 440 C 1457 422 1468 406 1480 400 Z" fill="#F1E8D8" opacity="0.9"/>
+  <!-- cobalt accent strokes near bust -->
+  <g stroke="#2749C9" stroke-width="4" fill="none" stroke-linecap="round">
+    <path d="M 1330 640 C 1368 660 1408 674 1450 684"/>
+    <path d="M 1348 700 C 1390 716 1432 728 1476 736"/>
+  </g>
+
+  <!-- halftone dot cluster lower right -->
+  <g fill="#3A3128" opacity="0.22">
+    <circle cx="1460" cy="880" r="5"/><circle cx="1482" cy="896" r="4"/><circle cx="1508" cy="882" r="5.5"/>
+    <circle cx="1440" cy="912" r="3.5"/><circle cx="1470" cy="930" r="4.5"/><circle cx="1502" cy="918" r="3.5"/>
+    <circle cx="1532" cy="900" r="5"/><circle cx="1558" cy="920" r="3.5"/>
+  </g>
+
+  <!-- olive branch line-art, quiet left-bottom -->
+  <g stroke="#3A3128" stroke-width="2.4" fill="none" stroke-linecap="round" opacity="0.85">
+    <path d="M 120 880 C 150 850 190 830 240 820"/>
+    <path d="M 160 855 C 170 840 182 834 196 834"/>
+    <path d="M 190 842 C 205 832 218 830 230 836"/>
+    <path d="M 130 868 C 142 856 156 852 170 854"/>
+  </g>
+  <g fill="#2749C9">
+    <ellipse cx="204" cy="828" rx="9" ry="11" transform="rotate(-18 204 828)"/>
+  </g>
+  <g fill="#3A3128" opacity="0.85">
+    <ellipse cx="242" cy="816" rx="8" ry="10" transform="rotate(10 242 816)"/>
+  </g>
+
+  <!-- micro text fragments -->
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#4A4034">
+    <text x="96" y="96" font-size="26" letter-spacing="10" opacity="0.75">ΣΩΚΡΑΤΗΣ</text>
+    <text x="96" y="140" font-size="17" letter-spacing="6" opacity="0.55">苏格拉底 · 提问词</text>
+    <text x="420" y="952" font-size="18" letter-spacing="8" opacity="0.4">事实 · 解释 · 应用 · 评价</text>
+    <text x="1430" y="80" font-size="15" letter-spacing="4" opacity="0.5">ASK · NOT TELL</text>
+  </g>
+  <!-- registration marks in cobalt -->
+  <g stroke="#2749C9" stroke-width="2" opacity="0.7">
+    <path d="M 78 78 h 26 M 91 65 v 26"/>
+    <path d="M 1506 78 h 26 M 1519 65 v 26"/>
+    <path d="M 78 912 h 26 M 91 899 v 26"/>
+  </g>
+
+  <!-- torn paper bottom edge -->
+  <path d="M 0 906
+    L 34 912 L 68 904 L 104 914 L 140 908 L 178 916 L 214 907 L 252 915 L 288 906 L 326 913 L 362 905 L 400 917 L 438 908 L 476 914 L 514 905 L 552 916 L 590 908 L 628 913 L 664 904 L 700 915 L 738 906 L 776 914 L 812 905 L 850 916 L 888 908 L 926 912 L 962 903 L 1000 915 L 1038 906 L 1076 913 L 1114 905 L 1152 916 L 1190 907 L 1228 914 L 1266 905 L 1304 916 L 1342 908 L 1380 913 L 1416 904 L 1454 915 L 1492 906 L 1530 914 L 1566 905 L 1600 912 L 1600 1000 L 0 1000 Z" fill="#F1E8D8"/>
+  <!-- fiber fringe -->
+  <g stroke="#D8CCB6" stroke-width="1.6" opacity="0.8" stroke-linecap="round">
+    <path d="M 140 906 l 3 14"/><path d="M 214 906 l -2 12"/><path d="M 400 908 l 2 16"/>
+    <path d="M 590 908 l -3 13"/><path d="M 812 904 l 2 15"/><path d="M 1000 906 l -2 14"/>
+    <path d="M 1190 906 l 3 12"/><path d="M 1416 904 l -3 15"/><path d="M 1530 905 l 2 13"/>
+  </g>
+  <g stroke="#BEB29B" stroke-width="1" opacity="0.7" stroke-linecap="round">
+    <path d="M 260 907 l 1 9"/><path d="M 664 905 l -1 10"/><path d="M 1152 906 l 1 8"/>
+    <path d="M 1342 906 l -1 9"/><path d="M 888 907 l 1 11"/>
+  </g>
+</svg>

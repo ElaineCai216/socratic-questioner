@@ -1,0 +1,14 @@
+name = "socratic-questioner"
+main = "index.js"
+compatibility_date = "2024-11-01"
+
+# 可选：限制允许的前端来源（逗号分隔）。留空 = 允许所有来源（配合访问码使用更安全）。
+[vars]
+ALLOWED_ORIGINS = ""
+
+# 必填 secrets（不要写在这里）：
+#   wrangler secret put API_KEY
+# 可选 secrets：
+#   wrangler secret put ACCESS_CODE
+# 可选 vars：
+#   BASE_URL  （默认 https://api.openai.com/v1，换 DeepSeek/Kimi 等时设置）

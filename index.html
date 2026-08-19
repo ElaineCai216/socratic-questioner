@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>苏格拉底提问词 · 不给你答案，只问到你真正懂为止</title>
+<meta name="description" content="把任何长篇专业文档交给苏格拉底：不直接总结，而是通过 事实→解释→应用→评价 四层提问，引导你真正弄懂。">
+<style>
+:root{
+  --paper:#F1E8D8;
+  --paper-deep:#E7DBC4;
+  --paper-white:#FAF4E7;
+  --ink:#3A3128;
+  --ink-soft:#6E6454;
+  --ink-faint:#9C927F;
+  --cobalt:#2749C9;
+  --cobalt-dark:#1D38A0;
+  --serif: Georgia, 'Times New Roman', 'Songti SC', 'STSong', 'SimSun', serif;
+  --sans: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='3'/><feColorMatrix type='matrix' values='0 0 0 0 0.52 0 0 0 0 0.47 0 0 0 0 0.38 0 0 0 0.05 0'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>");
+  color:var(--ink);
+  font-family:var(--sans);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+.hidden{display:none!important}
+
+/* ============ HERO ============ */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden}
+.hero svg.hero-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-scrim{position:absolute;inset:0;
+  background:linear-gradient(100deg, rgba(241,232,216,.96) 0%, rgba(241,232,216,.72) 22%, rgba(241,232,216,.22) 46%, rgba(241,232,216,0) 62%);
+}
+.hero-content{position:relative;z-index:2;max-width:620px;padding:6vw 7vw}
+.hero-kicker{font-family:var(--serif);letter-spacing:.32em;font-size:13px;color:var(--ink-soft);margin-bottom:26px;text-transform:uppercase}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(44px,7vw,78px);line-height:1.12;letter-spacing:.04em;margin-bottom:22px}
+.hero h1 .q{color:var(--cobalt)}
+.hero-sub{font-size:clamp(16px,2.2vw,21px);color:var(--ink-soft);max-width:30em;margin-bottom:38px;font-family:var(--serif)}
+.hero-levels{display:flex;gap:12px;margin-bottom:34px;flex-wrap:wrap}
+.hero-levels span{font-family:var(--serif);font-size:14px;letter-spacing:.22em;color:var(--ink-soft);border-bottom:1px solid rgba(58,49,40,.35);padding-bottom:4px}
+.hero-cta-row{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.hero-note{font-size:13px;color:var(--ink-faint);letter-spacing:.06em}
+
+/* ============ BUTTONS ============ */
+.btn{font-family:var(--sans);font-size:15px;color:var(--ink);background:var(--paper-white);
+  border:2px solid var(--ink);padding:11px 24px;cursor:pointer;position:relative;
+  box-shadow:4px 4px 0 var(--ink);transition:transform .16s ease,box-shadow .16s ease;letter-spacing:.04em}
+.btn:hover{transform:translate(-2px,-2px) rotate(-.6deg);box-shadow:6px 6px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--ink)}
+.btn-primary{background:#EFE6D2}
+.btn-ink{background:var(--ink);color:var(--paper)}
+.btn-ghost{background:transparent;box-shadow:none;border-color:var(--ink-soft);color:var(--ink-soft)}
+.btn-ghost:hover{color:var(--ink);border-color:var(--ink);box-shadow:3px 3px 0 var(--ink-soft)}
+.btn-sm{padding:7px 14px;font-size:13px}
+.btn .arrow{display:inline-block;margin-left:8px;transition:transform .16s ease}
+.btn:hover .arrow{transform:translateX(4px)}
+
+/* ============ APP PANELS ============ */
+.app{max-width:980px;margin:0 auto;padding:60px 22px 30px}
+.panel{position:relative;background:rgba(250,244,231,.82);border:1.5px solid var(--ink);
+  box-shadow:8px 8px 0 rgba(58,49,40,.9);
+  clip-path:polygon(0.6% 0.8%,2.2% 0%,7% 0.6%,12% 0.1%,20% 0.7%,30% 0.2%,41% 0.8%,52% 0.1%,63% 0.6%,74% 0.2%,84% 0.7%,93% 0.1%,98.4% 0.6%,100% 1.6%,99.7% 8%,100% 18%,99.6% 30%,100% 42%,99.7% 55%,100% 66%,99.5% 78%,100% 88%,99.8% 96%,98% 99.4%,92% 99.8%,82% 99.3%,71% 99.9%,60% 99.4%,49% 99.9%,38% 99.5%,28% 99.9%,18% 99.4%,9% 99.9%,3% 99.5%,0.4% 98%,0% 92%,0.4% 82%,0 72%,0.3% 61%,0 50%,0.4% 39%,0 28%,0.3% 17%,0 8%);
+  padding:34px 36px 40px;margin-bottom:56px}
+.panel::before{content:"✦";position:absolute;top:-15px;right:26px;font-size:15px;color:var(--cobalt);background:var(--paper);padding:2px 8px;border:1px solid rgba(39,73,201,.5)}
+.panel h2{font-family:var(--serif);font-size:27px;margin-bottom:6px;letter-spacing:.05em}
+.panel .lead{color:var(--ink-soft);font-size:14px;margin-bottom:26px}
+
+/* tabs */
+.tabs{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+.tab{font-family:var(--serif);font-size:15px;letter-spacing:.1em;padding:8px 18px;cursor:pointer;
+  background:transparent;border:1.5px solid var(--ink-soft);color:var(--ink-soft);transition:all .15s}
+.tab:hover{color:var(--ink);border-color:var(--ink)}
+.tab.active{background:var(--ink);color:var(--paper);border-color:var(--ink);box-shadow:3px 3px 0 var(--cobalt)}
+textarea,input[type=text],input[type=url],input[type=password]{
+  width:100%;font-family:var(--sans);font-size:15px;color:var(--ink);
+  background:var(--paper-white);border:1.5px solid var(--ink-soft);padding:13px 15px;outline:none;resize:vertical}
+textarea:focus,input:focus{border-color:var(--cobalt);box-shadow:0 0 0 3px rgba(39,73,201,.15)}
+#pasteText{min-height:230px;line-height:1.75}
+.meta{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-faint);margin:8px 2px 18px}
+.dropzone{border:2px dashed var(--ink-soft);padding:34px 20px;text-align:center;cursor:pointer;color:var(--ink-soft);transition:all .15s;background:rgba(250,244,231,.6)}
+.dropzone:hover,.dropzone.drag{border-color:var(--cobalt);color:var(--cobalt);background:rgba(39,73,201,.05)}
+.dropzone b{font-family:var(--serif);font-size:18px;display:block;margin-bottom:6px;color:var(--ink)}
+.dropzone input{display:none}
+.field-label{font-size:13px;color:var(--ink-soft);margin-bottom:6px;display:block;letter-spacing:.08em}
+.status{font-size:13.5px;margin-top:12px;min-height:20px;color:var(--ink-soft)}
+.status.err{color:#A33}
+.warn{background:#FBF3D9;border:1.5px solid var(--ink);padding:16px 18px;margin-top:18px;font-size:14px}
+.warn .warn-actions{display:flex;gap:12px;margin-top:12px}
+
+/* doc card */
+.doc-card{position:relative;padding:8px 6px}
+.doc-source{display:inline-block;font-size:12px;letter-spacing:.18em;color:var(--cobalt);border:1px solid rgba(39,73,201,.5);padding:2px 10px;margin-bottom:14px}
+.doc-card h3{font-family:var(--serif);font-size:25px;line-height:1.4;margin-bottom:12px}
+.doc-snippet{font-size:14.5px;color:var(--ink-soft);max-height:110px;overflow:hidden;position:relative;margin-bottom:26px;white-space:pre-line}
+.doc-snippet::after{content:"";position:absolute;left:0;right:0;bottom:0;height:44px;background:linear-gradient(transparent,rgba(250,244,231,.95))}
+.doc-stats{font-size:12.5px;color:var(--ink-faint);margin-bottom:26px;letter-spacing:.05em}
+.doc-actions{display:flex;gap:14px;flex-wrap:wrap}
+
+/* ============ CHAT ============ */
+.chat-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.level-track{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.stamp{position:relative;width:66px;height:66px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:1.5px solid var(--ink-soft);color:var(--ink-soft);background:var(--paper-white);
+  transform:rotate(-1.5deg);transition:all .25s}
+.stamp:nth-child(2n){transform:rotate(1.2deg)}
+.stamp .stamp-no{font-size:11px;letter-spacing:.1em}
+.stamp .stamp-name{font-family:var(--serif);font-size:15px;letter-spacing:.1em}
+.stamp .stamp-check{position:absolute;top:-8px;right:-8px;width:22px;height:22px;background:var(--cobalt);color:var(--paper);font-size:13px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.stamp.done{border-color:var(--cobalt);color:var(--paper);background:var(--cobalt);box-shadow:3px 3px 0 var(--ink)}
+.stamp.done .stamp-no{opacity:.75}
+.stamp.current{border-color:var(--cobalt);color:var(--cobalt);background:var(--paper-white);box-shadow:0 0 0 3px rgba(39,73,201,.18);animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(39,73,201,.16)}50%{box-shadow:0 0 0 6px rgba(39,73,201,.07)}}
+.chip-final{font-family:var(--serif);font-size:13px;letter-spacing:.14em;padding:6px 12px;border:1.5px dashed var(--ink-soft);color:var(--ink-soft)}
+.chip-final.passed{border:1.5px solid var(--cobalt);color:var(--cobalt);background:rgba(39,73,201,.08)}
+.chat-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+.chat{background:rgba(250,244,231,.6);border:1.5px solid var(--ink);padding:26px 24px;max-height:56vh;overflow-y:auto;margin-bottom:18px}
+.chat-empty{text-align:center;color:var(--ink-faint);font-family:var(--serif);font-size:15px;padding:40px 10px;letter-spacing:.1em}
+.msg{max-width:78%;margin-bottom:22px;animation:rise .3s ease}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg.ai{align-self:flex-start}
+.msg.user{align-self:flex-end;margin-left:auto}
+.msg .who{font-size:11.5px;letter-spacing:.18em;color:var(--ink-faint);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.msg .who .lvl{color:var(--cobalt);border:1px solid rgba(39,73,201,.5);padding:0 7px;letter-spacing:.08em}
+.msg .bubble{position:relative;background:var(--paper-white);border:1.5px solid var(--ink);padding:16px 19px;font-size:15px;line-height:1.85}
+.msg.ai .bubble{transform:rotate(-.35deg);box-shadow:4px 4px 0 rgba(58,49,40,.85)}
+.msg.user .bubble{background:var(--paper);transform:rotate(.35deg);box-shadow:4px 4px 0 var(--cobalt);border-color:var(--cobalt)}
+.msg .bubble p{margin-bottom:10px}
+.msg .bubble p:last-child{margin-bottom:0}
+.msg-pass .badge{display:inline-block;background:var(--cobalt);color:var(--paper);font-size:12px;letter-spacing:.12em;padding:3px 10px;margin-bottom:8px}
+.verdict-card{border:2px solid var(--cobalt);background:rgba(39,73,201,.06);padding:18px 20px;margin-bottom:22px;font-size:14px;color:var(--ink);transform:rotate(-.3deg);box-shadow:4px 4px 0 rgba(39,73,201,.55)}
+.verdict-card b{color:var(--cobalt)}
+
+.composer{display:flex;gap:12px;align-items:flex-end}
+.composer textarea{flex:1;min-height:64px;max-height:160px}
+.chat-foot{font-size:12px;color:var(--ink-faint);margin-top:14px;letter-spacing:.04em;text-align:center}
+
+/* ============ MODAL ============ */
+.modal{position:fixed;inset:0;background:rgba(58,49,40,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal-card{background:var(--paper-white);border:2px solid var(--ink);box-shadow:10px 10px 0 rgba(58,49,40,.9);max-width:480px;width:100%;padding:30px 32px;position:relative}
+.modal-card h3{font-family:var(--serif);font-size:22px;margin-bottom:20px}
+.modal-card label{display:block;font-size:13px;color:var(--ink-soft);margin-bottom:16px;letter-spacing:.06em}
+.modal-card input{margin-top:5px}
+.modal-note{font-size:12.5px;color:var(--ink-faint);background:rgba(39,73,201,.06);border-left:3px solid var(--cobalt);padding:9px 12px;margin-bottom:18px}
+.modal-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.conn-status{font-size:13px;margin-top:14px;min-height:18px}
+.conn-status.ok{color:var(--cobalt)}
+.conn-status.err{color:#A33}
+
+/* ============ TOAST ============ */
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);
+  padding:12px 22px;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:99;max-width:86vw;box-shadow:4px 4px 0 var(--cobalt)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:#7A2E1D;box-shadow:4px 4px 0 var(--ink)}
+
+.foot{text-align:center;padding:46px 20px 60px;font-size:12.5px;color:var(--ink-faint);letter-spacing:.22em;font-family:var(--serif)}
+
+@media (max-width:720px){
+  .app{padding:34px 12px 20px}
+  .panel{padding:24px 18px 30px}
+  .hero-content{padding:8vw 7vw}
+  .msg{max-width:92%}
+  .stamp{width:56px;height:56px}
+  .composer{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<header class="hero" id="hero">
+    <svg class="hero-art" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+<defs>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="11" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.58  0 0 0 0 0.52  0 0 0 0 0.42  0 0 0 0.10 0"/>
+    </filter>
+    <filter id="photoGrain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" seed="5" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.3  0 0 0 0 0.27  0 0 0 0 0.22  0 0 0 0.16 0"/>
+    </filter>
+    <radialGradient id="vignette" cx="45%" cy="42%" r="75%">
+      <stop offset="0%" stop-color="#F6EFE1"/>
+      <stop offset="60%" stop-color="#F1E8D8"/>
+      <stop offset="100%" stop-color="#E6DAC4"/>
+    </radialGradient>
+    <radialGradient id="photoBg" cx="38%" cy="36%" r="80%">
+      <stop offset="0%" stop-color="#DAD1C2"/>
+      <stop offset="55%" stop-color="#C9BFAE"/>
+      <stop offset="100%" stop-color="#ABA18F"/>
+    </radialGradient>
+    <linearGradient id="bustShade" x1="0" y1="0" x2="1" y2="0.3">
+      <stop offset="0%" stop-color="#EFE8DA"/>
+      <stop offset="38%" stop-color="#D9D0C1"/>
+      <stop offset="70%" stop-color="#B9AF9E"/>
+      <stop offset="100%" stop-color="#948A79"/>
+    </linearGradient>
+    <linearGradient id="robeShade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#DED5C6"/>
+      <stop offset="55%" stop-color="#C3B9A8"/>
+      <stop offset="100%" stop-color="#9C927F"/>
+    </linearGradient>
+    <clipPath id="photoClip">
+      <path d="M 700 150 C 820 138 980 142 1090 152 C 1190 160 1270 178 1325 215 C 1365 242 1388 280 1396 330 C 1406 400 1410 470 1404 545 C 1400 610 1392 660 1376 705 C 1358 752 1330 788 1295 818 C 1260 848 1210 872 1145 890 C 1080 908 1000 916 900 918 C 815 920 745 912 700 898 C 662 886 642 862 634 830 C 624 792 620 730 620 660 C 620 590 622 520 630 450 C 638 380 652 318 672 268 C 690 224 706 192 700 150 Z"/>
+    </clipPath>
+    <clipPath id="cobaltClip">
+      <path d="M 1600 0 L 1600 1010 L 0 1010 L 0 0 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Paper base -->
+  <rect width="1600" height="1000" fill="url(#vignette)"/>
+  <rect width="1600" height="1000" filter="url(#grain)"/>
+
+  <!-- Quiet-field contour echoes (broken lines drifting from bust toward text side) -->
+  <g stroke="#4A4034" stroke-width="2.2" fill="none" opacity="0.5" stroke-linecap="round" stroke-dasharray="14 10 4 8">
+    <path d="M 660 330 C 560 300 470 330 390 380"/>
+    <path d="M 640 470 C 540 450 430 465 350 510"/>
+    <path d="M 655 620 C 555 600 465 620 400 660"/>
+  </g>
+  <g stroke="#7C7262" stroke-width="1.4" fill="none" opacity="0.45" stroke-linecap="round" stroke-dasharray="3 7">
+    <path d="M 640 550 C 560 540 480 555 420 585"/>
+  </g>
+
+  <!-- Photo anchor: Socrates bust inside torn fragment -->
+  <g clip-path="url(#photoClip)">
+    <rect x="600" y="120" width="840" height="820" fill="url(#photoBg)"/>
+    <!-- soft inner shadow top -->
+    <ellipse cx="1010" cy="560" rx="400" ry="380" fill="none" stroke="#8A8071" stroke-width="90" opacity="0.12"/>
+    <!-- bust -->
+    <g>
+      <!-- head + neck outline -->
+      <path d="M 1010 205 C 1072 204 1132 262 1157 342 C 1170 388 1174 430 1168 470 C 1162 505 1150 535 1130 560 C 1118 576 1112 592 1115 612 C 1118 634 1128 650 1140 662 L 958 668 C 948 640 942 612 938 582 C 920 540 900 512 884 470 C 874 444 870 422 874 402 C 878 380 884 362 886 344 C 892 310 898 282 912 258 C 930 228 962 208 1010 205 Z" fill="url(#bustShade)"/>
+      <!-- bald crown highlight -->
+      <path d="M 1005 210 C 1050 210 1100 250 1128 305 C 1090 272 1045 252 1002 252 C 962 252 930 268 910 290 C 916 250 952 212 1005 210 Z" fill="#F4EDE0" opacity="0.55"/>
+      <!-- nose / brow shadow -->
+      <path d="M 874 402 C 862 392 858 382 862 372 C 868 358 880 350 888 344 C 892 360 890 376 884 388 C 880 396 878 400 874 402 Z" fill="#6E6454" opacity="0.75"/>
+      <!-- brow -->
+      <path d="M 890 330 C 878 334 868 344 862 356" stroke="#544B3C" stroke-width="3.4" fill="none" stroke-linecap="round" opacity="0.85"/>
+      <!-- nostril shadow -->
+      <path d="M 872 396 C 878 394 884 392 888 388" stroke="#6E6454" stroke-width="2.6" fill="none" stroke-linecap="round" opacity="0.8"/>
+      <!-- jaw line -->
+      <path d="M 884 468 C 894 482 906 494 922 500" stroke="#5C5344" stroke-width="2.6" fill="none" stroke-linecap="round" opacity="0.7"/>
+      <!-- mouth line -->
+      <path d="M 898 434 C 906 430 912 432 914 438" stroke="#5C5344" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- ear -->
+      <path d="M 1148 452 C 1156 462 1158 476 1152 488 C 1146 500 1138 506 1132 508" stroke="#8A8071" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8"/>
+      <!-- beard mass -->
+      <path d="M 916 470 C 898 500 886 538 902 572 C 920 608 956 628 1000 630 C 1048 632 1092 618 1120 592 C 1130 582 1134 568 1130 552 C 1126 540 1118 534 1110 532 C 1082 526 1052 530 1022 530 C 982 530 948 514 930 490 C 922 480 918 472 916 470 Z" fill="#8E8372"/>
+      <path d="M 916 470 C 906 492 898 516 902 544 C 906 574 926 600 956 616 C 970 624 986 628 1002 628" fill="none" stroke="#5C5344" stroke-width="2.5" opacity="0.7"/>
+      <path d="M 938 500 C 930 522 932 550 946 574" stroke="#6E6454" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round"/>
+      <path d="M 972 520 C 966 548 970 580 986 606" stroke="#6E6454" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round"/>
+      <path d="M 1012 536 C 1010 566 1016 596 1032 618" stroke="#6E6454" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round"/>
+      <!-- neck shadow -->
+      <path d="M 1000 640 C 1012 620 1026 614 1042 618" stroke="#6E6454" stroke-width="3" fill="none" opacity="0.5" stroke-linecap="round"/>
+      <!-- robe -->
+      <path d="M 958 668 C 920 672 880 692 848 722 C 810 760 790 810 782 868 C 778 898 782 912 790 918 L 1300 918 C 1306 900 1302 866 1290 838 C 1272 800 1246 768 1212 740 C 1176 712 1134 684 1100 668 C 1078 658 1066 660 1056 666 L 958 668 Z" fill="url(#robeShade)"/>
+      <!-- robe folds -->
+      <g stroke="#8A8071" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8">
+        <path d="M 852 730 C 866 772 870 820 858 872"/>
+        <path d="M 930 704 C 944 752 946 806 934 866"/>
+        <path d="M 1010 684 C 1026 738 1030 800 1020 862"/>
+        <path d="M 1096 690 C 1112 744 1116 806 1106 866"/>
+        <path d="M 1180 716 C 1196 768 1200 826 1192 876"/>
+        <path d="M 1246 748 C 1260 796 1264 848 1256 890"/>
+      </g>
+      <path d="M 1022 800 C 1042 832 1054 862 1058 896" stroke="#6E6454" stroke-width="2.4" fill="none" opacity="0.55" stroke-linecap="round"/>
+      <path d="M 1140 742 C 1156 780 1162 826 1160 878" stroke="#6E6454" stroke-width="2.4" fill="none" opacity="0.5" stroke-linecap="round"/>
+      <g stroke="#B3A996" stroke-width="2" fill="none" opacity="0.7">
+        <path d="M 892 722 C 904 764 908 812 900 864"/>
+        <path d="M 1058 692 C 1072 742 1074 800 1066 858"/>
+      </g>
+    </g>
+    <!-- photo grain + halftone -->
+    <rect x="600" y="120" width="840" height="820" filter="url(#photoGrain)"/>
+    <g fill="#4A4034" opacity="0.10">
+      <circle cx="760" cy="300" r="3"/><circle cx="790" cy="330" r="2.4"/><circle cx="724" cy="360" r="2.8"/>
+      <circle cx="1320" cy="300" r="3"/><circle cx="1350" cy="350" r="2.4"/><circle cx="1300" cy="390" r="2.6"/>
+      <circle cx="1340" cy="520" r="2.8"/><circle cx="1370" cy="570" r="2.2"/><circle cx="1326" cy="620" r="2.6"/>
+      <circle cx="740" cy="700" r="2.6"/><circle cx="770" cy="740" r="2.2"/><circle cx="706" cy="770" r="2.8"/>
+    </g>
+  </g>
+
+  <!-- Torn edge on the right of the photo fragment where illustration emerges -->
+  <g fill="none" stroke="#F1E8D8" stroke-width="6" stroke-linecap="round" opacity="0.9">
+    <path d="M 1386 226 C 1402 240 1414 262 1420 290 C 1428 322 1430 358 1426 396 C 1422 438 1412 470 1400 500 C 1388 532 1376 556 1370 576"/>
+    <path d="M 1418 330 C 1436 348 1444 372 1446 400 C 1448 432 1444 462 1434 490"/>
+  </g>
+
+  <!-- Cobalt illustration field (upper right), source-derived planes -->
+  <path d="M 1600 0 L 1130 0 C 1090 30 1062 66 1060 104 C 1058 142 1078 172 1110 196 C 1150 226 1190 248 1222 280 C 1256 314 1278 354 1282 398 C 1286 446 1270 492 1238 528 C 1206 564 1168 590 1144 622 C 1122 652 1112 684 1120 716 C 1128 750 1156 776 1196 794 C 1236 812 1282 824 1330 840 C 1400 862 1478 884 1600 908 Z" fill="#2749C9"/>
+  <path d="M 1600 0 L 1268 0 C 1240 40 1224 84 1232 126 C 1240 168 1268 198 1304 220 C 1340 242 1382 260 1418 288 C 1456 318 1480 356 1486 398 C 1492 442 1478 486 1448 518 C 1420 548 1384 570 1356 596 C 1330 620 1316 648 1320 678 C 1324 710 1346 736 1380 754 C 1420 774 1470 792 1526 810 L 1600 830 Z" fill="#1D38A0" opacity="0.85"/>
+  <!-- torn boundary along cobalt left edge -->
+  <path d="M 1134 6 C 1096 38 1066 72 1064 106 L 1074 128 L 1062 148 L 1074 170 L 1064 190 L 1082 212 L 1070 232 L 1094 254 L 1084 274 L 1110 296 L 1100 316 L 1130 338 L 1120 358 L 1148 380 L 1138 400 L 1164 422 L 1154 442 L 1178 464 L 1168 484 L 1190 506 L 1180 526 L 1200 548 L 1190 568 L 1208 590 L 1198 610 L 1214 632 L 1204 652 L 1218 674 L 1210 694 L 1222 716 L 1214 736 L 1228 758" stroke="#F1E8D8" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.95"/>
+  <!-- deeper torn notches -->
+  <path d="M 1116 154 L 1096 168 L 1106 190" stroke="#F1E8D8" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.95"/>
+  <path d="M 1186 416 L 1166 432 L 1178 456" stroke="#F1E8D8" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.95"/>
+  <path d="M 1230 668 L 1212 686 L 1224 708" stroke="#F1E8D8" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.95"/>
+  <!-- torn paper window inside cobalt -->
+  <path d="M 1396 120 C 1430 112 1468 116 1498 132 C 1516 141 1524 156 1522 174 C 1519 198 1506 216 1486 226 C 1458 240 1420 240 1394 226 C 1374 215 1364 194 1368 168 C 1372 146 1384 128 1396 120 Z" fill="#F1E8D8"/>
+  <path d="M 1480 400 C 1510 392 1542 396 1568 410 C 1584 419 1590 432 1588 448 C 1585 468 1572 484 1554 492 C 1530 502 1498 502 1476 490 C 1458 480 1450 462 1454 440 C 1457 422 1468 406 1480 400 Z" fill="#F1E8D8" opacity="0.9"/>
+  <!-- cobalt accent strokes near bust -->
+  <g stroke="#2749C9" stroke-width="4" fill="none" stroke-linecap="round">
+    <path d="M 1330 640 C 1368 660 1408 674 1450 684"/>
+    <path d="M 1348 700 C 1390 716 1432 728 1476 736"/>
+  </g>
+
+  <!-- halftone dot cluster lower right -->
+  <g fill="#3A3128" opacity="0.22">
+    <circle cx="1460" cy="880" r="5"/><circle cx="1482" cy="896" r="4"/><circle cx="1508" cy="882" r="5.5"/>
+    <circle cx="1440" cy="912" r="3.5"/><circle cx="1470" cy="930" r="4.5"/><circle cx="1502" cy="918" r="3.5"/>
+    <circle cx="1532" cy="900" r="5"/><circle cx="1558" cy="920" r="3.5"/>
+  </g>
+
+  <!-- olive branch line-art, quiet left-bottom -->
+  <g stroke="#3A3128" stroke-width="2.4" fill="none" stroke-linecap="round" opacity="0.85">
+    <path d="M 120 880 C 150 850 190 830 240 820"/>
+    <path d="M 160 855 C 170 840 182 834 196 834"/>
+    <path d="M 190 842 C 205 832 218 830 230 836"/>
+    <path d="M 130 868 C 142 856 156 852 170 854"/>
+  </g>
+  <g fill="#2749C9">
+    <ellipse cx="204" cy="828" rx="9" ry="11" transform="rotate(-18 204 828)"/>
+  </g>
+  <g fill="#3A3128" opacity="0.85">
+    <ellipse cx="242" cy="816" rx="8" ry="10" transform="rotate(10 242 816)"/>
+  </g>
+
+  <!-- micro text fragments -->
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#4A4034">
+    <text x="96" y="96" font-size="26" letter-spacing="10" opacity="0.75">ΣΩΚΡΑΤΗΣ</text>
+    <text x="96" y="140" font-size="17" letter-spacing="6" opacity="0.55">苏格拉底 · 提问词</text>
+    <text x="420" y="952" font-size="18" letter-spacing="8" opacity="0.4">事实 · 解释 · 应用 · 评价</text>
+    <text x="1430" y="80" font-size="15" letter-spacing="4" opacity="0.5">ASK · NOT TELL</text>
+  </g>
+  <!-- registration marks in cobalt -->
+  <g stroke="#2749C9" stroke-width="2" opacity="0.7">
+    <path d="M 78 78 h 26 M 91 65 v 26"/>
+    <path d="M 1506 78 h 26 M 1519 65 v 26"/>
+    <path d="M 78 912 h 26 M 91 899 v 26"/>
+  </g>
+
+  <!-- torn paper bottom edge -->
+  <path d="M 0 906
+    L 34 912 L 68 904 L 104 914 L 140 908 L 178 916 L 214 907 L 252 915 L 288 906 L 326 913 L 362 905 L 400 917 L 438 908 L 476 914 L 514 905 L 552 916 L 590 908 L 628 913 L 664 904 L 700 915 L 738 906 L 776 914 L 812 905 L 850 916 L 888 908 L 926 912 L 962 903 L 1000 915 L 1038 906 L 1076 913 L 1114 905 L 1152 916 L 1190 907 L 1228 914 L 1266 905 L 1304 916 L 1342 908 L 1380 913 L 1416 904 L 1454 915 L 1492 906 L 1530 914 L 1566 905 L 1600 912 L 1600 1000 L 0 1000 Z" fill="#F1E8D8"/>
+  <!-- fiber fringe -->
+  <g stroke="#D8CCB6" stroke-width="1.6" opacity="0.8" stroke-linecap="round">
+    <path d="M 140 906 l 3 14"/><path d="M 214 906 l -2 12"/><path d="M 400 908 l 2 16"/>
+    <path d="M 590 908 l -3 13"/><path d="M 812 904 l 2 15"/><path d="M 1000 906 l -2 14"/>
+    <path d="M 1190 906 l 3 12"/><path d="M 1416 904 l -3 15"/><path d="M 1530 905 l 2 13"/>
+  </g>
+  <g stroke="#BEB29B" stroke-width="1" opacity="0.7" stroke-linecap="round">
+    <path d="M 260 907 l 1 9"/><path d="M 664 905 l -1 10"/><path d="M 1152 906 l 1 8"/>
+    <path d="M 1342 906 l -1 9"/><path d="M 888 907 l 1 11"/>
+  </g>
+  </svg>
+  <div class="hero-scrim"></div>
+  <div class="hero-content">
+    <p class="hero-kicker">ΣΩΚΡΑΤΗΣ · 苏格拉底式提问</p>
+    <h1>苏格拉底<span class="q">提问词</span></h1>
+    <p class="hero-sub">不给你答案，只问到你真正懂为止。</p>
+    <div class="hero-levels">
+      <span>事实</span><span>解释</span><span>应用</span><span>评价</span><span>终审</span>
+    </div>
+    <div class="hero-cta-row">
+      <button class="btn btn-primary" id="startBtn">开始提问<span class="arrow">→</span></button>
+      <span class="hero-note">支持粘贴 · PDF / Word / 网页链接</span>
+    </div>
+  </div>
+</header>
+
+<main class="app" id="app">
+  <!-- Step 1: input -->
+  <section class="panel" id="inputPanel">
+    <h2>把文档交给苏格拉底</h2>
+    <p class="lead">不直接总结——先读，然后开始提问。</p>
+    <div class="tabs">
+      <button class="tab active" data-tab="paste">粘贴文本</button>
+      <button class="tab" data-tab="file">上传文件</button>
+      <button class="tab" data-tab="url">网页链接</button>
+    </div>
+
+    <div class="tabpane" id="pane-paste">
+      <textarea id="pasteText" placeholder="把长篇专业文档粘贴到这里…&#10;（上限 60,000 字，超出会提示截断）"></textarea>
+      <div class="meta"><span id="pasteCount">0 字</span><span>上限 60,000 字 · 全程只在本浏览器处理</span></div>
+      <button class="btn btn-primary" id="loadPasteBtn">载入文档<span class="arrow">→</span></button>
+    </div>
+
+    <div class="tabpane hidden" id="pane-file">
+      <div class="dropzone" id="dropzone">
+        <b>拖拽或点击选择文件</b>
+        支持 TXT / Markdown / PDF / Word（.docx）<br>解析在浏览器本地完成，文件不会上传
+        <input type="file" id="fileInput" accept=".txt,.md,.text,.markdown,.pdf,.docx">
+      </div>
+      <div class="status" id="fileStatus"></div>
+    </div>
+
+    <div class="tabpane hidden" id="pane-url">
+      <label class="field-label" for="urlInput">输入文章网址</label>
+      <input type="url" id="urlInput" placeholder="https://example.com/article">
+      <button class="btn btn-primary" id="fetchUrlBtn" style="margin-top:14px">抓取正文<span class="arrow">→</span></button>
+      <div class="status" id="urlStatus"></div>
+    </div>
+
+    <div class="warn hidden" id="truncateWarn">
+      <b>文档较长：</b>超过 60,000 字上限。你可以<b>截断载入</b>（保留前 60,000 字）继续，或返回精简后重新粘贴。
+      <div class="warn-actions">
+        <button class="btn btn-sm btn-primary" id="truncateOkBtn">截断载入</button>
+        <button class="btn btn-sm btn-ghost" id="truncateCancelBtn">取消</button>
+      </div>
+    </div>
+
+    <div style="text-align:right;margin-top:22px">
+      <button class="btn btn-ghost btn-sm" id="settingsBtn">⚙ 设置</button>
+    </div>
+  </section>
+
+  <!-- Step 2: doc loaded -->
+  <section class="panel hidden" id="docPanel">
+    <h2>文档已就绪</h2>
+    <p class="lead">苏格拉底已经读完，准备开始提问。</p>
+    <div class="doc-card">
+      <span class="doc-source" id="docSource">粘贴文本</span>
+      <h3 id="docTitle"></h3>
+      <div class="doc-stats" id="docStats"></div>
+      <p class="doc-snippet" id="docSnippet"></p>
+      <div class="doc-actions">
+        <button class="btn btn-primary" id="beginBtn">开始苏格拉底提问<span class="arrow">→</span></button>
+        <button class="btn btn-ghost" id="redoBtn">换一篇文档</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 3: chat -->
+  <section class="panel hidden" id="chatPanel">
+    <div class="chat-head">
+      <div class="level-track" id="levelTrack"></div>
+      <div class="chat-actions">
+        <button class="btn btn-sm btn-ink" id="checkBtn">检验</button>
+        <button class="btn btn-sm btn-ghost" id="exportBtn">导出对话</button>
+        <button class="btn btn-sm btn-ghost" id="newChatBtn">新对话</button>
+        <button class="btn btn-sm btn-ghost" id="settingsBtn2">⚙</button>
+      </div>
+    </div>
+    <div class="chat" id="chatBox">
+      <div class="chat-empty">把文档交给苏格拉底后，第一个问题会出现在这里。</div>
+    </div>
+    <div class="composer">
+      <textarea id="answerInput" placeholder="写下你的理解，然后回答…（Enter 发送 / Shift+Enter 换行）"></textarea>
+      <button class="btn btn-primary" id="sendBtn">回答</button>
+    </div>
+    <div class="chat-foot" id="chatDocTitle"></div>
+  </section>
+</main>
+
+<!-- Settings modal -->
+<div class="modal hidden" id="settingsModal">
+  <div class="modal-card">
+    <h3>设置</h3>
+    <label>Worker 地址
+      <input type="url" id="setWorker" placeholder="https://your-worker.workers.dev">
+    </label>
+    <label>模型名（OpenAI 兼容）
+      <input type="text" id="setModel" placeholder="gpt-4o-mini">
+    </label>
+    <label>访问码（可选，与 Worker 配置一致）
+      <input type="password" id="setCode" placeholder="留空表示不需要">
+    </label>
+    <div class="modal-note">API Key 不会存放在这里。请把它配置为 Cloudflare Worker 的 secret（见 README），浏览器只持有 Worker 地址与模型名。</div>
+    <div class="modal-actions">
+      <button class="btn btn-sm btn-ghost" id="testConnBtn">测试连接</button>
+      <button class="btn btn-sm btn-primary" id="saveSettingsBtn">保存</button>
+      <button class="btn btn-sm btn-ghost" id="closeSettingsBtn">关闭</button>
+    </div>
+    <div class="conn-status" id="connStatus"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<footer class="foot">ΣΩΚΡΑΤΗΣ · 苏格拉底提问词 — 不直接总结 · 只问到你懂 · 每一次理解都算数</footer>
+
+<script>
+"use strict";
+/* ================= constants ================= */
+const MAX_DOC = 60000;
+const LS_SETTINGS = "socratic:settings:v1";
+const LS_SESSIONS = "socratic:sessions:v1";
+const LEVEL_NAMES = ["事实", "解释", "应用", "评价"];
+const PDFJS_URL = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js";
+const PDFJS_WORKER = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+const MAMMOTH_URL = "https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js";
+const DEFAULT_SETTINGS = { workerUrl: "", model: "gpt-4o-mini", accessCode: "" };
+
+/* ================= state ================= */
+let settings = loadSettings();
+let sessions = loadSessions();
+let currentDoc = null;
+let session = null;
+let busy = false;
+let pendingDoc = null;
+
+/* ================= utils ================= */
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+function toast(msg, type) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.className = "toast show" + (type === "err" ? " err" : "");
+  clearTimeout(t._h);
+  t._h = setTimeout(() => (t.className = "toast"), 3000);
+}
+function hashDoc(s) {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(16);
+}
+function now() { return Date.now(); }
+function loadSettings() {
+  try { return Object.assign({}, DEFAULT_SETTINGS, JSON.parse(localStorage.getItem(LS_SETTINGS) || "{}")); }
+  catch (e) { return Object.assign({}, DEFAULT_SETTINGS); }
+}
+function saveSettings() { localStorage.setItem(LS_SETTINGS, JSON.stringify(settings)); }
+function loadSessions() {
+  try { return JSON.parse(localStorage.getItem(LS_SESSIONS) || "[]"); }
+  catch (e) { return []; }
+}
+function saveSessions() {
+  try { localStorage.setItem(LS_SESSIONS, JSON.stringify(sessions.slice(0, 12))); } catch (e) {}
+}
+
+/* ================= views ================= */
+function showInput() {
+  $("#inputPanel").classList.remove("hidden");
+  $("#docPanel").classList.add("hidden");
+  $("#chatPanel").classList.add("hidden");
+}
+function showDoc() {
+  $("#inputPanel").classList.add("hidden");
+  $("#docPanel").classList.remove("hidden");
+  $("#chatPanel").classList.add("hidden");
+}
+function showChat() {
+  $("#inputPanel").classList.add("hidden");
+  $("#docPanel").classList.add("hidden");
+  $("#chatPanel").classList.remove("hidden");
+  $("#chatDocTitle").textContent = "正在学习：" + (session ? session.docTitle : "");
+  window.scrollTo({ top: $("#app").offsetTop - 16, behavior: "smooth" });
+}
+
+/* ================= document loading ================= */
+function setDoc({ title, text, sourceType, truncated }) {
+  if (!text || !text.trim()) { toast("没有可用的正文", "err"); return; }
+  currentDoc = {
+    title: (title && String(title).trim()) || text.trim().slice(0, 24) + "…",
+    text, sourceType, truncated
+  };
+  $("#docSource").textContent =
+    ({ paste: "粘贴文本", file: "上传文件", url: "网页链接" }[sourceType] || sourceType) +
+    (truncated ? " · 已截断至 60,000 字" : "");
+  $("#docTitle").textContent = currentDoc.title;
+  $("#docStats").textContent = "共 " + text.length.toLocaleString() + " 字";
+  $("#docSnippet").textContent = text.trim().slice(0, 260);
+  showDoc();
+  window.scrollTo({ top: $("#app").offsetTop - 16, behavior: "smooth" });
+}
+function handleDocText(title, text, sourceType) {
+  if (text.length > MAX_DOC) {
+    pendingDoc = { title, text, sourceType };
+    $("#truncateWarn").classList.remove("hidden");
+  } else {
+    setDoc({ title, text, sourceType, truncated: false });
+  }
+}
+function confirmTruncate() {
+  if (!pendingDoc) return;
+  setDoc({ title: pendingDoc.title, text: pendingDoc.text.slice(0, MAX_DOC), sourceType: pendingDoc.sourceType, truncated: true });
+  pendingDoc = null;
+  $("#truncateWarn").classList.add("hidden");
+}
+function cancelTruncate() {
+  pendingDoc = null;
+  $("#truncateWarn").classList.add("hidden");
+}
+
+/* ================= session / chat ================= */
+function begin() {
+  if (!currentDoc) return;
+  session = {
+    id: "s" + now().toString(36) + Math.random().toString(36).slice(2, 7),
+    docTitle: currentDoc.title,
+    docHash: hashDoc(currentDoc.text),
+    docText: currentDoc.text,
+    sourceType: currentDoc.sourceType,
+    truncated: !!currentDoc.truncated,
+    createdAt: now(), updatedAt: now(),
+    status: "active", level: 1, messages: [], verdict: null
+  };
+  sessions.unshift(session);
+  saveSessions();
+  showChat();
+  renderLevels();
+  renderMessages();
+  askAI("start");
+}
+function newChat() {
+  if (!currentDoc) return;
+  session = {
+    id: "s" + now().toString(36) + Math.random().toString(36).slice(2, 7),
+    docTitle: currentDoc.title,
+    docHash: hashDoc(currentDoc.text),
+    docText: currentDoc.text,
+    sourceType: currentDoc.sourceType,
+    truncated: !!currentDoc.truncated,
+    createdAt: now(), updatedAt: now(),
+    status: "active", level: 1, messages: [], verdict: null
+  };
+  sessions.unshift(session);
+  saveSessions();
+  showChat();
+  renderLevels();
+  renderMessages();
+  toast("已开始新一轮对话");
+  askAI("start");
+}
+async function sendAnswer() {
+  const v = $("#answerInput").value.trim();
+  if (!v || busy) return;
+  session.messages.push({ role: "user", content: v, ts: now() });
+  session.updatedAt = now();
+  $("#answerInput").value = "";
+  autoGrow();
+  renderMessages();
+  saveSessions();
+  await askAI("ask");
+}
+async function checkNow() {
+  if (!session || busy) return;
+  await askAI("final");
+}
+async function askAI(mode) {
+  if (!settings.workerUrl) { toast("请先在设置里填写 Worker 地址", "err"); return; }
+  setBusy(true);
+  try {
+    const body = {
+      mode,
+      model: settings.model || "gpt-4o-mini",
+      docText: session.docText,
+      history: session.messages.slice(-30).map((m) => ({ role: m.role, content: m.content })),
+      level: session.level,
+      accessCode: settings.accessCode || ""
+    };
+    const res = await fetch(settings.workerUrl.replace(/\/+$/, "") + "/ask", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body)
+    });
+    let data = {};
+    try { data = await res.json(); } catch (e) {}
+    if (!res.ok || data.error) { handleApiError(data.error, data.message, res.status); return; }
+    const parsed = parseReply(data.reply || "");
+    session.messages.push({ role: "assistant", content: parsed.text, ts: now(), level: parsed.level, verdict: parsed.verdict });
+    if (parsed.level) session.level = clamp(parsed.level, 1, 4);
+    if (parsed.verdict === "pass") { session.status = "passed"; session.verdict = parsed.text; }
+    session.updatedAt = now();
+    renderMessages();
+    renderLevels();
+    saveSessions();
+  } catch (e) {
+    console.error(e);
+    toast("无法连接 Worker：" + (e.message || "网络错误"), "err");
+  } finally {
+    setBusy(false);
+  }
+}
+function parseReply(raw) {
+  let text = raw || "";
+  let level = null, verdict = null;
+  const lm = text.match(/\[LEVEL\s*:\s*([1-4])\]/);
+  if (lm) { level = +lm[1]; text = text.replace(lm[0], ""); }
+  const pm = text.match(/\[(PASS|CONTINUE)\]/);
+  if (pm) { verdict = pm[1].toLowerCase(); text = text.replace(pm[0], ""); }
+  text = text.replace(/\[\s*LEVEL\s*:\s*[1-4]\s*\]/g, "").replace(/\[\s*(PASS|CONTINUE)\s*\]/g, "").trim();
+  return { text, level, verdict };
+}
+function handleApiError(code, message, status) {
+  const map = {
+    worker_key_missing: "Worker 尚未配置 API Key（请在 Worker 的 secrets 里设置，见 README）",
+    access_denied: "访问码错误或无权限",
+    upstream_401: "模型服务的 API Key 无效或额度不足",
+    upstream_429: "模型服务限流，请稍后再试",
+    upstream_5xx: "模型服务暂时不可用，请稍后再试",
+    timeout: "模型响应超时，请重试",
+    bad_url: "无法访问该网址（链接无效或目标站点拒绝抓取）",
+    too_large: "请求内容过大，请精简文档后重试",
+    bad_request: "请求格式有误，请刷新页面重试"
+  };
+  toast(map[code] || message || "请求失败（HTTP " + status + "）", "err");
+}
+
+/* ================= rendering ================= */
+function renderLevels() {
+  const track = $("#levelTrack");
+  track.innerHTML = "";
+  LEVEL_NAMES.forEach((name, i) => {
+    const n = i + 1;
+    const el = document.createElement("div");
+    el.className = "stamp " + (n < session.level ? "done" : n === session.level ? "current" : "todo");
+    el.innerHTML = '<span class="stamp-no">' + n + '</span><span class="stamp-name">' + name + "</span>" +
+      (n < session.level ? '<span class="stamp-check">✓</span>' : "");
+    track.appendChild(el);
+  });
+  const chip = document.createElement("div");
+  chip.className = "chip-final" + (session.status === "passed" ? " passed" : "");
+  chip.textContent = session.status === "passed" ? "终审 ✓ 通过" : "终审";
+  track.appendChild(chip);
+}
+function renderMessages() {
+  const box = $("#chatBox");
+  box.innerHTML = "";
+  if (!session.messages.length) {
+    box.innerHTML = '<div class="chat-empty">把文档交给苏格拉底后，第一个问题会出现在这里。</div>';
+    return;
+  }
+  session.messages.forEach((m) => {
+    if (m.role === "user") box.appendChild(userBubble(m));
+    else box.appendChild(aiBubble(m));
+  });
+  if (session.status === "passed") {
+    const v = document.createElement("div");
+    v.className = "verdict-card";
+    v.innerHTML = "<b>✓ 终审通过</b> —— 苏格拉底认为你已经真正弄懂了这份文档。";
+    box.appendChild(v);
+  }
+  box.scrollTop = box.scrollHeight;
+}
+function userBubble(m) {
+  const w = document.createElement("div");
+  w.className = "msg user";
+  const who = document.createElement("div");
+  who.className = "who";
+  who.textContent = "我";
+  const b = document.createElement("div");
+  b.className = "bubble";
+  b.textContent = m.content;
+  w.appendChild(who); w.appendChild(b);
+  return w;
+}
+function aiBubble(m) {
+  const w = document.createElement("div");
+  w.className = "msg ai" + (m.verdict === "pass" ? " msg-pass" : "");
+  const who = document.createElement("div");
+  who.className = "who";
+  const name = document.createElement("span");
+  name.textContent = m.verdict === "pass" ? "苏格拉底 · 终审" : "苏格拉底";
+  who.appendChild(name);
+  if (m.level && m.verdict !== "pass") {
+    const lvl = document.createElement("span");
+    lvl.className = "lvl";
+    lvl.textContent = "第 " + m.level + " 层 · " + LEVEL_NAMES[m.level - 1];
+    who.appendChild(lvl);
+  }
+  if (m.verdict === "pass") {
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    badge.textContent = "✓ 终审通过";
+    w.appendChild(badge);
+  }
+  const b = document.createElement("div");
+  b.className = "bubble";
+  b.textContent = m.content;
+  w.appendChild(who); w.appendChild(b);
+  return w;
+}
+
+/* ================= file parsing ================= */
+const scriptCache = {};
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if (scriptCache[src]) { resolve(); return; }
+    const s = document.createElement("script");
+    s.src = src;
+    s.onload = () => { scriptCache[src] = 1; resolve(); };
+    s.onerror = () => reject(new Error("加载解析库失败，请检查网络"));
+    document.head.appendChild(s);
+  });
+}
+async function handleFile(file) {
+  const name = (file.name || "").toLowerCase();
+  $("#fileStatus").textContent = "正在读取 " + file.name + " …";
+  try {
+    let text = null;
+    if (/\.(txt|md|text|markdown)$/.test(name)) {
+      text = await file.text();
+    } else if (name.endsWith(".pdf")) {
+      await loadScript(PDFJS_URL);
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+      const data = new Uint8Array(await file.arrayBuffer());
+      const pdf = await window.pdfjsLib.getDocument({ data }).promise;
+      const out = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const tc = await page.getTextContent();
+        out.push(tc.items.map((it) => it.str || "").join(" "));
+      }
+      text = out.join("\n\n");
+    } else if (name.endsWith(".docx")) {
+      await loadScript(MAMMOTH_URL);
+      const ab = await file.arrayBuffer();
+      const r = await window.mammoth.extractRawText({ arrayBuffer: ab });
+      text = r.value;
+    } else {
+      toast("不支持的文件类型", "err");
+      return;
+    }
+    if (!text || !text.trim()) { toast("未能从文件中提取到文字", "err"); return; }
+    handleDocText(name, text, "file");
+  } catch (e) {
+    console.error(e);
+    toast("文件解析失败：" + (e && e.message ? e.message : "未知错误"), "err");
+  } finally {
+    $("#fileStatus").textContent = "";
+  }
+}
+
+/* ================= URL fetch ================= */
+async function fetchUrl() {
+  const u = $("#urlInput").value.trim();
+  if (!u) { toast("请输入网址", "err"); return; }
+  if (!settings.workerUrl) { toast("请先在设置里填写 Worker 地址", "err"); return; }
+  setBusy(true);
+  $("#urlStatus").textContent = "正在抓取正文…";
+  try {
+    const res = await fetch(settings.workerUrl.replace(/\/+$/, "") + "/fetch", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: u, accessCode: settings.accessCode || "" })
+    });
+    let data = {};
+    try { data = await res.json(); } catch (e) {}
+    if (!res.ok || data.error) { handleApiError(data.error, data.message, res.status); return; }
+    if (!data.text || !data.text.trim()) { toast("该页面没有可提取的正文", "err"); return; }
+    setDoc({ title: data.title || u, text: data.text, sourceType: "url", truncated: !!data.truncated });
+  } catch (e) {
+    console.error(e);
+    toast("抓取失败：" + (e.message || "网络错误"), "err");
+  } finally {
+    setBusy(false);
+    $("#urlStatus").textContent = "";
+  }
+}
+
+/* ================= export ================= */
+function exportMd() {
+  if (!session) return;
+  const lines = [];
+  lines.push("# " + session.docTitle);
+  lines.push("");
+  lines.push("> 苏格拉底提问 · " + new Date(session.createdAt).toLocaleString("zh-CN"));
+  lines.push("> 来源：" + ({ paste: "粘贴文本", file: "上传文件", url: "网页链接" }[session.sourceType] || session.sourceType) + (session.truncated ? "（已截断至 60,000 字）" : ""));
+  lines.push("");
+  lines.push("---");
+  lines.push("");
+  session.messages.forEach((m) => {
+    lines.push((m.role === "assistant" ? "**苏格拉底**" : "**我**") + "：" + m.content);
+    lines.push("");
+  });
+  if (session.status === "passed") lines.push("**终审**：✓ 已通过");
+  const blob = new Blob([lines.join("\n")], { type: "text/markdown;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = (session.docTitle || "对话").replace(/[\\\\/:*?"<>|]/g, "_").slice(0, 40) + "-苏格拉底对话.md";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+  toast("对话已导出为 Markdown");
+}
+
+/* ================= settings modal ================= */
+function openSettings() {
+  $("#setWorker").value = settings.workerUrl;
+  $("#setModel").value = settings.model;
+  $("#setCode").value = settings.accessCode;
+  $("#connStatus").textContent = "";
+  $("#settingsModal").classList.remove("hidden");
+}
+function closeSettings() { $("#settingsModal").classList.add("hidden"); }
+function saveSettingsForm() {
+  settings.workerUrl = $("#setWorker").value.trim();
+  settings.model = ($("#setModel").value.trim() || "gpt-4o-mini");
+  settings.accessCode = $("#setCode").value.trim();
+  saveSettings();
+  toast("设置已保存");
+  closeSettings();
+}
+async function testConn() {
+  const wu = $("#setWorker").value.trim().replace(/\/+$/, "");
+  const st = $("#connStatus");
+  if (!wu) { st.textContent = "请先填写 Worker 地址"; st.className = "conn-status err"; return; }
+  st.textContent = "正在测试…";
+  st.className = "conn-status";
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 10000);
+    const res = await fetch(wu + "/health", { signal: ctrl.signal });
+    clearTimeout(t);
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.ok) {
+      st.textContent = "✓ 连接正常" + (data.hasKey ? "（已配置 API Key）" : "（注意：Worker 尚未配置 API Key）");
+      st.className = "conn-status ok";
+    } else {
+      st.textContent = "✗ 连接失败：" + (data.error || res.status);
+      st.className = "conn-status err";
+    }
+  } catch (e) {
+    st.textContent = "✗ 无法连接：" + (e.name === "AbortError" ? "超时" : "网络错误");
+    st.className = "conn-status err";
+  }
+}
+
+/* ================= misc UI ================= */
+function setBusy(b) {
+  busy = b;
+  $("#sendBtn").disabled = b;
+  $("#checkBtn").disabled = b;
+  $("#answerInput").disabled = b;
+}
+function autoGrow() {
+  const ta = $("#answerInput");
+  ta.style.height = "auto";
+  ta.style.height = Math.min(160, ta.scrollHeight) + "px";
+}
+function autoResume() {
+  if (!sessions.length) return;
+  const last = sessions.find((s) => s.status === "active") || sessions[sessions.length - 1];
+  if (!last || !last.docText) return;
+  session = last;
+  currentDoc = { title: last.docTitle, text: last.docText, sourceType: last.sourceType, truncated: last.truncated };
+  showChat();
+  renderLevels();
+  renderMessages();
+  toast("已恢复上次对话：" + last.docTitle);
+}
+
+/* ================= events ================= */
+function bindEvents() {
+  $("#startBtn").addEventListener("click", () => {
+    document.getElementById("app").scrollIntoView({ behavior: "smooth" });
+  });
+  $$(".tab").forEach((t) => t.addEventListener("click", () => {
+    $$(".tab").forEach((x) => x.classList.toggle("active", x === t));
+    $$(".tabpane").forEach((p) => p.classList.toggle("hidden", p.id !== "pane-" + t.dataset.tab));
+  }));
+  $("#loadPasteBtn").addEventListener("click", () => {
+    const v = $("#pasteText").value;
+    if (!v.trim()) { toast("请先粘贴文档内容", "err"); return; }
+    handleDocText("粘贴文档", v, "paste");
+  });
+  $("#pasteText").addEventListener("input", () => {
+    $("#pasteCount").textContent = $("#pasteText").value.length.toLocaleString() + " 字";
+  });
+  // file
+  const dz = $("#dropzone");
+  dz.addEventListener("click", () => $("#fileInput").click());
+  dz.addEventListener("dragover", (e) => { e.preventDefault(); dz.classList.add("drag"); });
+  dz.addEventListener("dragleave", () => dz.classList.remove("drag"));
+  dz.addEventListener("drop", (e) => {
+    e.preventDefault(); dz.classList.remove("drag");
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+  $("#fileInput").addEventListener("change", (e) => {
+    if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+    e.target.value = "";
+  });
+  // url
+  $("#fetchUrlBtn").addEventListener("click", fetchUrl);
+  $("#urlInput").addEventListener("keydown", (e) => { if (e.key === "Enter") fetchUrl(); });
+  // truncate
+  $("#truncateOkBtn").addEventListener("click", confirmTruncate);
+  $("#truncateCancelBtn").addEventListener("click", cancelTruncate);
+  // doc panel
+  $("#beginBtn").addEventListener("click", begin);
+  $("#redoBtn").addEventListener("click", () => { currentDoc = null; session = null; showInput(); });
+  // chat
+  $("#sendBtn").addEventListener("click", sendAnswer);
+  $("#answerInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendAnswer(); }
+  });
+  $("#answerInput").addEventListener("input", autoGrow);
+  $("#checkBtn").addEventListener("click", checkNow);
+  $("#exportBtn").addEventListener("click", exportMd);
+  $("#newChatBtn").addEventListener("click", newChat);
+  // settings
+  $("#settingsBtn").addEventListener("click", openSettings);
+  $("#settingsBtn2").addEventListener("click", openSettings);
+  $("#closeSettingsBtn").addEventListener("click", closeSettings);
+  $("#saveSettingsBtn").addEventListener("click", saveSettingsForm);
+  $("#testConnBtn").addEventListener("click", testConn);
+  $("#settingsModal").addEventListener("click", (e) => { if (e.target === $("#settingsModal")) closeSettings(); });
+}
+
+/* ================= init ================= */
+bindEvents();
+autoResume();
+</script>
+</body>
+</html>
