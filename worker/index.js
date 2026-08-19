@@ -36,13 +36,16 @@ const SYSTEM_PROMPT = `你是「苏格拉底提问词」里的导师。你的唯
 4. 只有学习者在本层表现出真实理解才升级；不要把"猜对关键词"当成理解。
 5. 问题必须具体引用文档中的实际内容（术语、论点、例子、数字），不要空泛地问"你觉得呢"。
 6. 始终用中文。
-7. 每条回复末尾另起一行输出标记：
-   - 普通对话：输出 [LEVEL:n]，n 为本轮回复后学习者所处的层级（1-4）。
-   - 终审模式（学习者请求"检验"时）：评估后输出 [PASS] 或 [CONTINUE]。
+7. 格式要求（非常重要）：每条回复的【最后一行】必须单独输出半角方括号标记，前面不能有其它文字：
+   - 普通对话：根据本轮回复后学习者所处的层级输出 [LEVEL:1]、[LEVEL:2]、[LEVEL:3] 或 [LEVEL:4]；
+   - 终审模式（学习者请求"检验"时）：最后一行只能输出 [PASS] 或 [CONTINUE] 之一，绝不能输出 [LEVEL:n]——即使你还在追问，也必须以 [CONTINUE] 结尾。
+   示例（在第 1 层提问的回复结尾）：
+   （问题内容……）
+   [LEVEL:1]
 终审模式细则：
 - 综合四个层级评估学习者表现。
 - 若已基本掌握：明确说"你已经真正弄懂了这份文档"，然后给一段简要总结（此时才允许总结），再列出 1-3 个仍薄弱或值得深挖的点，最后输出 [PASS]。
-- 若仍有明显漏洞：先指出薄弱之处，然后针对薄弱层提出追问（仍一次只问一个），最后输出 [CONTINUE]。`;
+- 若仍有明显漏洞：先指出薄弱之处，然后针对薄弱层提出一个追问，最后一行输出 [CONTINUE]（追问也必须以 [CONTINUE] 结尾）。`;
 
 const START_HINT = '（这是对话的开始：请直接提出第 1 层·事实的第一个问题，不要总结文档，不要解释规则。）';
 
@@ -181,7 +184,17 @@ async function handleAsk(request, env) {
   const maxTokens = mode === 'final' ? 1200 : mode === 'start' ? 500 : 800;
   const result = await callLLM(env, model, messages, maxTokens);
   if (result.error) return json({ error: result.error, message: result.message }, 502);
-  return json({ reply: result.reply });
+  let reply = String(result.reply || '');
+  // 服务端兜底：模型漏标时按规则补全标记，保证前端层级/终审状态确定
+  if (mode === 'final') {
+    if (!/\[(PASS|CONTINUE)\]/.test(reply)) {
+      const passed = /真正弄懂|已(经|基本)掌握|通过了终审|可以(结束|通过)|\bpass\b/i.test(reply);
+      reply = reply.trim() + '\n\n[' + (passed ? 'PASS' : 'CONTINUE') + ']';
+    }
+  } else if (!/\[LEVEL\s*:\s*[1-4]\]/.test(reply)) {
+    reply = reply.trim() + '\n\n[LEVEL:' + level + ']';
+  }
+  return json({ reply });
 }
 
 function decodeEntities(s) {
