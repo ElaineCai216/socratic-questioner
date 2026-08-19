@@ -153,6 +153,19 @@ textarea:focus,input:focus{border-color:var(--cobalt);box-shadow:0 0 0 3px rgba(
 .conn-status.ok{color:var(--cobalt)}
 .conn-status.err{color:#A33}
 
+/* ============ CHAT SYSTEM CARD ============ */
+.msg-sys{max-width:92%;margin:0 auto 22px;background:rgba(250,244,231,.9);border:1.5px dashed var(--ink-soft);padding:18px 20px;font-size:14px;color:var(--ink-soft);text-align:center;animation:rise .3s ease}
+.msg-sys .sys-title{font-family:var(--serif);font-size:17px;color:var(--ink);display:block;margin-bottom:6px;letter-spacing:.05em}
+.msg-sys .sys-text{display:block}
+.msg-sys .sys-actions{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+
+/* toggles */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;border-bottom:1px dashed rgba(58,49,40,.18);padding:9px 0;margin-bottom:10px}
+.toggle-row span{font-size:14px;color:var(--ink);letter-spacing:.04em}
+.toggle-row input{width:auto;margin:0;accent-color:var(--cobalt);transform:scale(1.3);cursor:pointer}
+#musicBtn:not(.on){opacity:.5}
+#musicBtn.on{color:var(--cobalt);border-color:var(--cobalt);box-shadow:3px 3px 0 rgba(39,73,201,.35)}
+
 /* ============ TOAST ============ */
 .toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);
   padding:12px 22px;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:99;max-width:86vw;box-shadow:4px 4px 0 var(--cobalt)}
@@ -445,6 +458,7 @@ textarea:focus,input:focus{border-color:var(--cobalt);box-shadow:0 0 0 3px rgba(
         <button class="btn btn-sm btn-ghost" id="exportBtn">导出对话</button>
         <button class="btn btn-sm btn-ghost" id="newChatBtn">新对话</button>
         <button class="btn btn-sm btn-ghost" id="settingsBtn2">⚙</button>
+        <button class="btn btn-sm btn-ghost" id="musicBtn" title="背景音开关">♫</button>
       </div>
     </div>
     <div class="chat" id="chatBox">
@@ -471,6 +485,8 @@ textarea:focus,input:focus{border-color:var(--cobalt);box-shadow:0 0 0 3px rgba(
     <label>访问码（可选，与 Worker 配置一致）
       <input type="password" id="setCode" placeholder="留空表示不需要">
     </label>
+    <div class="toggle-row"><span>点击音效</span><input type="checkbox" id="setSfx"></div>
+    <div class="toggle-row"><span>背景音（柔和氛围）</span><input type="checkbox" id="setMusic"></div>
     <div class="modal-note">API Key 不会存放在这里。请把它配置为 Cloudflare Worker 的 secret（见 README），浏览器只持有 Worker 地址与模型名。</div>
     <div class="modal-actions">
       <button class="btn btn-sm btn-ghost" id="testConnBtn">测试连接</button>
@@ -494,7 +510,7 @@ const LEVEL_NAMES = ["事实", "解释", "应用", "评价"];
 const PDFJS_URL = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js";
 const PDFJS_WORKER = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
 const MAMMOTH_URL = "https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js";
-const DEFAULT_SETTINGS = { workerUrl: "", model: "gpt-4o-mini", accessCode: "" };
+const DEFAULT_SETTINGS = { workerUrl: "", model: "gpt-4o-mini", accessCode: "", sfx: true, music: true };
 
 /* ================= state ================= */
 let settings = loadSettings();
@@ -503,6 +519,7 @@ let currentDoc = null;
 let session = null;
 let busy = false;
 let pendingDoc = null;
+let chatError = null;
 
 /* ================= utils ================= */
 const $ = (s) => document.querySelector(s);
@@ -534,6 +551,92 @@ function saveSessions() {
   try { localStorage.setItem(LS_SESSIONS, JSON.stringify(sessions.slice(0, 12))); } catch (e) {}
 }
 
+/* ================= audio (Web Audio 合成音效 + 背景音) ================= */
+const AudioSys = (() => {
+  let ctx = null, sfxGain = null, musicGain = null;
+  let musicTimer = null, step = 0, nextTime = 0;
+  const STEP = 60 / 72 / 2; // 72 BPM 八分音符
+  function ensure() {
+    if (!ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ctx = new AC();
+      sfxGain = ctx.createGain(); sfxGain.gain.value = 0.55; sfxGain.connect(ctx.destination);
+      musicGain = ctx.createGain(); musicGain.gain.value = 0.5; musicGain.connect(ctx.destination);
+    }
+    if (ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  function env(g, t, a, d, peak) {
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + a);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + a + d);
+  }
+  function tone(freq, t, dur, type, peak, dest) {
+    if (!ctx) return;
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.type = type || "sine"; o.frequency.setValueAtTime(freq, t);
+    env(g, t, 0.008, dur, peak || 0.2);
+    o.connect(g); g.connect(dest || sfxGain);
+    o.start(t); o.stop(t + dur + 0.15);
+  }
+  function noise(t, dur, peak, freq, type) {
+    if (!ctx) return;
+    const len = Math.max(1, Math.floor(ctx.sampleRate * dur));
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const f = ctx.createBiquadFilter(); f.type = type || "lowpass"; f.frequency.value = freq || 1200;
+    const g = ctx.createGain(); env(g, t, 0.005, dur, peak || 0.3);
+    src.connect(f); f.connect(g); g.connect(sfxGain);
+    src.start(t);
+  }
+  function play(name) {
+    if (!settings.sfx) return;
+    const c = ensure(); if (!c) return;
+    const t = c.currentTime;
+    switch (name) {
+      case "click": noise(t, 0.045, 0.15, 2600, "bandpass"); tone(1700, t, 0.05, "triangle", 0.09); break;
+      case "send": noise(t, 0.16, 0.2, 900); tone(520, t, 0.12, "sine", 0.11); tone(760, t + 0.05, 0.14, "sine", 0.09); break;
+      case "question": tone(660, t, 0.22, "sine", 0.13); tone(880, t + 0.09, 0.3, "sine", 0.11); break;
+      case "levelup": [523, 659, 784].forEach((f, i) => tone(f, t + i * 0.07, 0.22, "triangle", 0.11)); break;
+      case "pass": [523, 659, 784, 1047].forEach((f, i) => tone(f, t + i * 0.09, 0.32, "sine", 0.1)); break;
+      case "error": tone(220, t, 0.25, "sawtooth", 0.07); tone(180, t + 0.12, 0.3, "sawtooth", 0.06); break;
+      case "paper": noise(t, 0.3, 0.11, 700, "bandpass"); break;
+    }
+  }
+  const MELODY = [523.25, 659.25, 783.99, 880, 783.99, 659.25, 587.33, 659.25,
+                  523.25, 659.25, 783.99, 1046.5, 880, 783.99, 659.25, 587.33];
+  function scheduleMusic() {
+    if (!ctx || !musicGain) return;
+    while (nextTime < ctx.currentTime + 0.8) {
+      const f = MELODY[step % MELODY.length];
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type = "sine"; o.frequency.value = f;
+      const t = nextTime;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.05, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + STEP * 1.6);
+      o.connect(g); g.connect(musicGain);
+      o.start(t); o.stop(t + STEP * 1.7);
+      if (step % 8 === 0) tone(261.63, t, STEP * 2, "sine", 0.05, musicGain);
+      nextTime += STEP;
+      step++;
+    }
+  }
+  function startMusic() {
+    const c = ensure(); if (!c) return;
+    if (musicTimer) return;
+    step = 0; nextTime = c.currentTime + 0.1;
+    musicTimer = setInterval(scheduleMusic, 250);
+  }
+  function stopMusic() {
+    if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
+  }
+  return { play, startMusic, stopMusic, ensure };
+})();
+
 /* ================= views ================= */
 function showInput() {
   $("#inputPanel").classList.remove("hidden");
@@ -554,18 +657,23 @@ function showChat() {
 }
 
 /* ================= document loading ================= */
+function fillDocPanel() {
+  if (!currentDoc) return;
+  $("#docSource").textContent =
+    ({ paste: "粘贴文本", file: "上传文件", url: "网页链接" }[currentDoc.sourceType] || currentDoc.sourceType) +
+    (currentDoc.truncated ? " · 已截断至 60,000 字" : "");
+  $("#docTitle").textContent = currentDoc.title;
+  $("#docStats").textContent = "共 " + currentDoc.text.length.toLocaleString() + " 字";
+  $("#docSnippet").textContent = currentDoc.text.trim().slice(0, 260);
+}
 function setDoc({ title, text, sourceType, truncated }) {
   if (!text || !text.trim()) { toast("没有可用的正文", "err"); return; }
   currentDoc = {
     title: (title && String(title).trim()) || text.trim().slice(0, 24) + "…",
     text, sourceType, truncated
   };
-  $("#docSource").textContent =
-    ({ paste: "粘贴文本", file: "上传文件", url: "网页链接" }[sourceType] || sourceType) +
-    (truncated ? " · 已截断至 60,000 字" : "");
-  $("#docTitle").textContent = currentDoc.title;
-  $("#docStats").textContent = "共 " + text.length.toLocaleString() + " 字";
-  $("#docSnippet").textContent = text.trim().slice(0, 260);
+  fillDocPanel();
+  AudioSys.play("paper");
   showDoc();
   window.scrollTo({ top: $("#app").offsetTop - 16, behavior: "smooth" });
 }
@@ -591,6 +699,7 @@ function cancelTruncate() {
 /* ================= session / chat ================= */
 function begin() {
   if (!currentDoc) return;
+  chatError = null;
   session = {
     id: "s" + now().toString(36) + Math.random().toString(36).slice(2, 7),
     docTitle: currentDoc.title,
@@ -610,6 +719,7 @@ function begin() {
 }
 function newChat() {
   if (!currentDoc) return;
+  chatError = null;
   session = {
     id: "s" + now().toString(36) + Math.random().toString(36).slice(2, 7),
     docTitle: currentDoc.title,
@@ -635,6 +745,7 @@ async function sendAnswer() {
   session.updatedAt = now();
   $("#answerInput").value = "";
   autoGrow();
+  AudioSys.play("send");
   renderMessages();
   saveSessions();
   await askAI("ask");
@@ -644,8 +755,20 @@ async function checkNow() {
   await askAI("final");
 }
 async function askAI(mode) {
-  if (!settings.workerUrl) { toast("请先在设置里填写 Worker 地址", "err"); return; }
+  chatError = null;
+  if (!settings.workerUrl) {
+    toast("请先在设置里填写 Worker 地址", "err");
+    chatError = {
+      kind: "config", mode,
+      text: "还没有填写 Worker 地址。AI 提问需要一个 Cloudflare Worker（部署与配置步骤见 README）。填好后点「重试」即可继续。",
+      retry: true
+    };
+    renderMessages();
+    AudioSys.play("error");
+    return;
+  }
   setBusy(true);
+  const prevLevel = session ? session.level : 1;
   try {
     const body = {
       mode,
@@ -660,18 +783,26 @@ async function askAI(mode) {
     });
     let data = {};
     try { data = await res.json(); } catch (e) {}
-    if (!res.ok || data.error) { handleApiError(data.error, data.message, res.status); return; }
+    if (!res.ok || data.error) { handleApiError(data.error, data.message, res.status, mode); return; }
     const parsed = parseReply(data.reply || "");
     session.messages.push({ role: "assistant", content: parsed.text, ts: now(), level: parsed.level, verdict: parsed.verdict });
+    const advanced = parsed.level && parsed.level > prevLevel;
     if (parsed.level) session.level = clamp(parsed.level, 1, 4);
-    if (parsed.verdict === "pass") { session.status = "passed"; session.verdict = parsed.text; }
+    if (parsed.verdict === "pass") { session.status = "passed"; session.verdict = parsed.text; AudioSys.play("pass"); }
+    else if (parsed.verdict === "continue") AudioSys.play("question");
+    else if (advanced) AudioSys.play("levelup");
+    else AudioSys.play(mode === "start" ? "question" : "send");
     session.updatedAt = now();
     renderMessages();
     renderLevels();
     saveSessions();
   } catch (e) {
     console.error(e);
-    toast("无法连接 Worker：" + (e.message || "网络错误"), "err");
+    const msg = "无法连接 Worker：" + (e.message || "网络错误");
+    toast(msg, "err");
+    chatError = { kind: "error", mode, retry: true, text: msg + " 请检查 Worker 地址、访问码与网络后重试。" };
+    renderMessages();
+    AudioSys.play("error");
   } finally {
     setBusy(false);
   }
@@ -686,7 +817,7 @@ function parseReply(raw) {
   text = text.replace(/\[\s*LEVEL\s*:\s*[1-4]\s*\]/g, "").replace(/\[\s*(PASS|CONTINUE)\s*\]/g, "").trim();
   return { text, level, verdict };
 }
-function handleApiError(code, message, status) {
+function handleApiError(code, message, status, mode) {
   const map = {
     worker_key_missing: "Worker 尚未配置 API Key（请在 Worker 的 secrets 里设置，见 README）",
     access_denied: "访问码错误或无权限",
@@ -698,7 +829,13 @@ function handleApiError(code, message, status) {
     too_large: "请求内容过大，请精简文档后重试",
     bad_request: "请求格式有误，请刷新页面重试"
   };
-  toast(map[code] || message || "请求失败（HTTP " + status + "）", "err");
+  const msg = map[code] || message || ("请求失败（HTTP " + status + "）");
+  toast(msg, "err");
+  if (mode) {
+    chatError = { kind: "error", mode, retry: true, text: msg + " 你可以稍后点「重试」，或打开设置检查配置。" };
+    renderMessages();
+  }
+  AudioSys.play("error");
 }
 
 /* ================= rendering ================= */
@@ -723,7 +860,6 @@ function renderMessages() {
   box.innerHTML = "";
   if (!session.messages.length) {
     box.innerHTML = '<div class="chat-empty">把文档交给苏格拉底后，第一个问题会出现在这里。</div>';
-    return;
   }
   session.messages.forEach((m) => {
     if (m.role === "user") box.appendChild(userBubble(m));
@@ -735,7 +871,36 @@ function renderMessages() {
     v.innerHTML = "<b>✓ 终审通过</b> —— 苏格拉底认为你已经真正弄懂了这份文档。";
     box.appendChild(v);
   }
+  if (chatError) box.appendChild(systemCard(chatError));
   box.scrollTop = box.scrollHeight;
+}
+function systemCard(err) {
+  const w = document.createElement("div");
+  w.className = "msg-sys";
+  const t = document.createElement("span");
+  t.className = "sys-title";
+  t.textContent = err.kind === "config" ? "AI 服务还没接好" : "这次提问没连上";
+  w.appendChild(t);
+  const p = document.createElement("span");
+  p.className = "sys-text";
+  p.textContent = err.text;
+  w.appendChild(p);
+  const acts = document.createElement("div");
+  acts.className = "sys-actions";
+  if (err.retry) {
+    const retry = document.createElement("button");
+    retry.className = "btn btn-sm btn-ink";
+    retry.textContent = "重试";
+    retry.addEventListener("click", () => { chatError = null; renderMessages(); askAI(err.mode || "ask"); });
+    acts.appendChild(retry);
+  }
+  const cfg = document.createElement("button");
+  cfg.className = "btn btn-sm btn-ghost";
+  cfg.textContent = "打开设置";
+  cfg.addEventListener("click", openSettings);
+  acts.appendChild(cfg);
+  w.appendChild(acts);
+  return w;
 }
 function userBubble(m) {
   const w = document.createElement("div");
@@ -883,15 +1048,28 @@ function openSettings() {
   $("#setWorker").value = settings.workerUrl;
   $("#setModel").value = settings.model;
   $("#setCode").value = settings.accessCode;
+  $("#setSfx").checked = settings.sfx !== false;
+  $("#setMusic").checked = settings.music !== false;
   $("#connStatus").textContent = "";
   $("#settingsModal").classList.remove("hidden");
+}
+function updateMusicBtn() {
+  const b = $("#musicBtn");
+  if (!b) return;
+  b.textContent = "♫";
+  b.classList.toggle("on", !!settings.music);
+  b.title = settings.music ? "关闭背景音" : "打开背景音";
 }
 function closeSettings() { $("#settingsModal").classList.add("hidden"); }
 function saveSettingsForm() {
   settings.workerUrl = $("#setWorker").value.trim();
   settings.model = ($("#setModel").value.trim() || "gpt-4o-mini");
   settings.accessCode = $("#setCode").value.trim();
+  settings.sfx = $("#setSfx").checked;
+  settings.music = $("#setMusic").checked;
   saveSettings();
+  if (settings.music) AudioSys.startMusic(); else AudioSys.stopMusic();
+  updateMusicBtn();
   toast("设置已保存");
   closeSettings();
 }
@@ -934,14 +1112,24 @@ function autoGrow() {
 }
 function autoResume() {
   if (!sessions.length) return;
-  const last = sessions.find((s) => s.status === "active") || sessions[sessions.length - 1];
-  if (!last || !last.docText) return;
-  session = last;
-  currentDoc = { title: last.docTitle, text: last.docText, sourceType: last.sourceType, truncated: last.truncated };
-  showChat();
-  renderLevels();
-  renderMessages();
-  toast("已恢复上次对话：" + last.docTitle);
+  const hasMsgs = (s) => s.docText && s.messages && s.messages.length;
+  const last = sessions.find((s) => s.status === "active" && hasMsgs(s)) || sessions.find(hasMsgs);
+  if (last) {
+    session = last;
+    currentDoc = { title: last.docTitle, text: last.docText, sourceType: last.sourceType, truncated: last.truncated };
+    showChat();
+    renderLevels();
+    renderMessages();
+    toast("已恢复上次对话：" + last.docTitle);
+    return;
+  }
+  const empty = sessions.find((s) => s.docText);
+  if (empty) {
+    currentDoc = { title: empty.docTitle, text: empty.docText, sourceType: empty.sourceType, truncated: empty.truncated };
+    fillDocPanel();
+    showDoc();
+    toast("上次对话还没开始，请点击「开始苏格拉底提问」");
+  }
 }
 
 /* ================= events ================= */
@@ -999,6 +1187,27 @@ function bindEvents() {
   $("#saveSettingsBtn").addEventListener("click", saveSettingsForm);
   $("#testConnBtn").addEventListener("click", testConn);
   $("#settingsModal").addEventListener("click", (e) => { if (e.target === $("#settingsModal")) closeSettings(); });
+  // audio
+  $("#musicBtn").addEventListener("click", () => {
+    settings.music = !settings.music;
+    saveSettings();
+    if (settings.music) AudioSys.startMusic(); else AudioSys.stopMusic();
+    updateMusicBtn();
+    toast(settings.music ? "已开启背景音" : "已关闭背景音");
+  });
+  document.addEventListener("click", (e) => {
+    if (e.target.closest(".btn, .tab")) AudioSys.play("click");
+  });
+  function firstGesture() {
+    AudioSys.ensure();
+    if (settings.music) AudioSys.startMusic();
+    updateMusicBtn();
+    document.removeEventListener("pointerdown", firstGesture);
+    document.removeEventListener("keydown", firstGesture);
+  }
+  document.addEventListener("pointerdown", firstGesture);
+  document.addEventListener("keydown", firstGesture);
+  updateMusicBtn();
 }
 
 /* ================= init ================= */
