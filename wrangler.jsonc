@@ -1,0 +1,9 @@
+// 根目录配置：供 Cloudflare「从 Git 部署」使用，保证自动部署的是 API Worker 而不是静态文件。
+{
+  "name": "socratic-questioner",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-08-01",
+  "vars": {
+    "ALLOWED_ORIGINS": ""
+  }
+}
